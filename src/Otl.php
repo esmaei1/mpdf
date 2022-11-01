@@ -382,7 +382,8 @@ class Otl
 							$this->GSUBdata[$this->GSUBfont]['pstf'] = $font['pstf'];
 						}
 					} else {
-						$this->GSUBdata[$this->GSUBfont] = ['rtlSUB' => [], 'rphf' => [], 'rphf' => [],
+						$this->GSUBdata[$this->GSUBfont] = [
+							'rtlSUB' => [], 'rphf' => [], 'rphf' => [],
 							'pref' => [], 'blwf' => [], 'pstf' => [], 'finals' => ''
 						];
 					}
@@ -475,7 +476,8 @@ class Otl
 						// Connected to preceding medial BAA (0628) = FE92
 						// Position: Before preceding medial Baa
 						// Although not mentioned in spec, added Farsi Yeh (06CC) FBFD FBFF; equivalent to 064A or 0649
-						elseif ($this->OTLdata[$i]['uni'] == 0xFEAE || $this->OTLdata[$i]['uni'] == 0xFEF2 || $this->OTLdata[$i]['uni'] == 0xFEF0 || $this->OTLdata[$i]['uni'] == 0xFEF4 || $this->OTLdata[$i]['uni'] == 0xFBE9 || $this->OTLdata[$i]['uni'] == 0xFBFD || $this->OTLdata[$i]['uni'] == 0xFBFF
+						elseif (
+							$this->OTLdata[$i]['uni'] == 0xFEAE || $this->OTLdata[$i]['uni'] == 0xFEF2 || $this->OTLdata[$i]['uni'] == 0xFEF0 || $this->OTLdata[$i]['uni'] == 0xFEF4 || $this->OTLdata[$i]['uni'] == 0xFBE9 || $this->OTLdata[$i]['uni'] == 0xFBFD || $this->OTLdata[$i]['uni'] == 0xFBFF
 						) {
 							$checkpos = $i - 1;
 							while (isset($this->OTLdata[$checkpos]) && strpos($this->GlyphClassMarks, $this->OTLdata[$checkpos]['hex']) !== false) {
@@ -872,13 +874,14 @@ class Otl
 
 								$ntones = 0; // number of (preceding) tone marks
 								// IS_TONE_MARK ((x) & ~0x0080, 0x0E34 - 0x0E37, 0x0E47 - 0x0E4E, 0x0E31)
-								while (isset($this->OTLdata[$ptr - 1 - $ntones]) && (
-								($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) == 0x0E31 ||
-								(($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) >= 0x0E34 &&
-								($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) <= 0x0E37) ||
-								(($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) >= 0x0E47 &&
-								($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) <= 0x0E4E)
-								)
+								while (
+									isset($this->OTLdata[$ptr - 1 - $ntones]) && (
+										($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) == 0x0E31 ||
+										(($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) >= 0x0E34 &&
+											($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) <= 0x0E37) ||
+										(($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) >= 0x0E47 &&
+											($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) <= 0x0E4E)
+									)
 								) {
 									$ntones++;
 								}
@@ -986,12 +989,15 @@ class Otl
 				$newinfo[0] = [
 					'general_category' => Ucdn::UNICODE_GENERAL_CATEGORY_FORMAT,
 					'bidi_type' => Ucdn::BIDI_CLASS_BN,
-					'group' => 'S', 'uni' => 0x200B, 'hex' => '0200B'];
+					'group' => 'S', 'uni' => 0x200B, 'hex' => '0200B'
+				];
 				// Then insert U+200B at (after) all word end boundaries
 				for ($i = count($this->OTLdata) - 1; $i > 0; $i--) {
 					// Make sure after GSUB that wordend has not been moved - check next char is not in the same syllable
-					if (isset($this->OTLdata[$i]['wordend']) && $this->OTLdata[$i]['wordend'] &&
-						isset($this->OTLdata[$i + 1]['uni']) && (!isset($this->OTLdata[$i + 1]['syllable']) || !isset($this->OTLdata[$i + 1]['syllable']) || $this->OTLdata[$i + 1]['syllable'] != $this->OTLdata[$i]['syllable'])) {
+					if (
+						isset($this->OTLdata[$i]['wordend']) && $this->OTLdata[$i]['wordend'] &&
+						isset($this->OTLdata[$i + 1]['uni']) && (!isset($this->OTLdata[$i + 1]['syllable']) || !isset($this->OTLdata[$i + 1]['syllable']) || $this->OTLdata[$i + 1]['syllable'] != $this->OTLdata[$i]['syllable'])
+					) {
 						array_splice($this->OTLdata, $i + 1, 0, $newinfo);
 						$this->_updateLigatureMarks($i, 1);
 					} elseif ($this->OTLdata[$i]['uni'] == 0x2e) { // Word end if Full-stop.
@@ -1105,7 +1111,7 @@ class Otl
 									}
 								}
 								if (isset($this->Exit[$i]['X']) && isset($this->Entry[$nextbase]['X'])) {
-									$adj = -($this->Entry[$i]['X'] - $this->Exit[$nextbase]['X']);
+									$adj = - ($this->Entry[$i]['X'] - $this->Exit[$nextbase]['X']);
 									// If XAdvance is aplied - in order for PDF to position the Advance correctly need to place it on:
 									// in RTL - the current glyph or the last of any associated marks
 									if (isset($this->OTLdata[$nextbase + 1]['GPOSinfo']['XAdvance'])) {
@@ -1147,7 +1153,7 @@ class Otl
 									}
 								}
 								if (isset($this->Exit[$i]['X']) && isset($this->Entry[$nextbase]['X'])) {
-									$adj = -($this->Exit[$i]['X'] - $this->Entry[$nextbase]['X']);
+									$adj = - ($this->Exit[$i]['X'] - $this->Entry[$nextbase]['X']);
 									// If XAdvance is aplied - in order for PDF to position the Advance correctly need to place it on:
 									// in LTR - the next glyph, ignoring marks
 									if (isset($this->OTLdata[$nextbase]['GPOSinfo']['XAdvance'])) {
@@ -1232,7 +1238,7 @@ class Otl
 		for ($i = 0; $i < count($m[0]); $i++) {
 			$t = $m[1][$i];
 			// Is it a valid tag?
-			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false )) {
+			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false)) {
 				$usetags .= ' ' . $t;
 			}
 		}
@@ -1245,7 +1251,7 @@ class Otl
 		for ($i = 0; $i < count($m[0]); $i++) {
 			$t = $m[1][$i];
 			// Is it a valid tag?
-			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false )) {
+			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false)) {
 				$usetags = str_replace($t, '', $usetags);
 			}
 		}
@@ -1258,7 +1264,7 @@ class Otl
 		for ($i = 0; $i < count($m[0]); $i++) {
 			$t = $m[1][$i];
 			// Is it a valid tag?
-			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false )) {
+			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false)) {
 				$usetags .= ' ' . $m[0][$i];  //  - may include integer: salt4
 			}
 		}
@@ -1271,7 +1277,7 @@ class Otl
 		for ($i = 0; $i < count($m[0]); $i++) {
 			$t = $m[1][$i];
 			// Is it a valid tag?
-			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false )) {
+			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false)) {
 				$usetags = str_replace($t, '', $usetags);
 			}
 		}
@@ -1891,8 +1897,7 @@ class Otl
 
 							if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
 								return $shift;
-							} /* OTL_FIX_3 */
-							else {
+							} /* OTL_FIX_3 */ else {
 								return $InputGlyphCount; // should be + matched ignores in Input Sequence
 							}
 						}
@@ -2000,8 +2005,7 @@ class Otl
 
 								if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
 									return $shift;
-								} /* OTL_FIX_3 */
-								else {
+								} /* OTL_FIX_3 */ else {
 									return $InputGlyphCount; // should be + matched ignores in Input Sequence
 								}
 							}
@@ -2096,8 +2100,7 @@ class Otl
 						}
 						if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
 							return $shift;
-						} /* OTL_FIX_3 */
-						else {
+						} /* OTL_FIX_3 */ else {
 							return $InputGlyphCount; // should be + matched ignores in Input Sequence
 						}
 					}
@@ -2267,8 +2270,7 @@ class Otl
 
 								if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
 									return $shift;
-								} /* OTL_FIX_3 */
-								else {
+								} /* OTL_FIX_3 */ else {
 									return $InputGlyphCount; // should be + matched ignores in Input Sequence
 								}
 							}
@@ -2351,8 +2353,7 @@ class Otl
 					}
 					if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
 						return (isset($shift) ? $shift : 0);
-					} /* OTL_FIX_3 */
-					else {
+					} /* OTL_FIX_3 */ else {
 						return $InputGlyphCount; // should be + matched ignores in Input Sequence
 					}
 				}
@@ -2753,7 +2754,8 @@ class Otl
 			0x084B => 1, 0x084C => 1, 0x084D => 1, 0x084E => 1, 0x0850 => 1, 0x0851 => 1, 0x0852 => 1, 0x0853 => 1,
 			0x0855 => 1,
 			/* ZWJ U+200D */
-			0x0200D => 1];
+			0x0200D => 1
+		];
 
 		/* JOIN TO PREVIOUS LETTER IN LOGICAL ORDER (i.e. AS FINAL/MEDIAL FORM) = Unicode Right-Joining (+ Dual-Joining + Join_Causing) */
 		$this->arabRightJoining = [
@@ -2804,7 +2806,8 @@ class Otl
 			0x0855 => 1,
 			0x0840 => 1, 0x0846 => 1, 0x0849 => 1, 0x084F => 1, 0x0854 => 1, /* Right joining */
 			/* ZWJ U+200D */
-			0x0200D => 1];
+			0x0200D => 1
+		];
 
 		/* VOWELS = TRANSPARENT-JOINING = Unicode Transparent-Joining type (not just vowels) */
 		$this->arabTransparent = [
@@ -3104,21 +3107,21 @@ class Otl
 			$x = ord($dict[$dictptr]);
 			$c = $this->OTLdata[$ptr]['uni'] & 0xFF;
 			if ($x == static::_DICT_INTERMEDIATE_MATCH) {
-//echo "DICT_INTERMEDIATE_MATCH: ".dechex($c).'<br />';
+				//echo "DICT_INTERMEDIATE_MATCH: ".dechex($c).'<br />';
 				// Do not match if next character in text is a Mark
 				if (isset($this->OTLdata[$ptr]['uni']) && strpos($this->GlyphClassMarks, $this->OTLdata[$ptr]['hex']) === false) {
 					$matches[] = $ptr - 1;
 				}
 				$dictptr++;
 			} elseif ($x == static::_DICT_FINAL_MATCH) {
-//echo "DICT_FINAL_MATCH: ".dechex($c).'<br />';
+				//echo "DICT_FINAL_MATCH: ".dechex($c).'<br />';
 				// Do not match if next character in text is a Mark
 				if (isset($this->OTLdata[$ptr]['uni']) && strpos($this->GlyphClassMarks, $this->OTLdata[$ptr]['hex']) === false) {
 					$matches[] = $ptr - 1;
 				}
 				return $matches;
 			} elseif ($x == static::_DICT_NODE_TYPE_LINEAR) {
-//echo "DICT_NODE_TYPE_LINEAR: ".dechex($c).'<br />';
+				//echo "DICT_NODE_TYPE_LINEAR: ".dechex($c).'<br />';
 				$dictptr++;
 				$m = ord($dict[$dictptr]);
 				if ($c == $m) {
@@ -3136,11 +3139,11 @@ class Otl
 					$dictptr++;
 					continue;
 				} else {
-//echo "DICT_NODE_TYPE_LINEAR NOT: ".dechex($c).'<br />';
+					//echo "DICT_NODE_TYPE_LINEAR NOT: ".dechex($c).'<br />';
 					return $matches;
 				}
 			} elseif ($x == static::_DICT_NODE_TYPE_SPLIT) {
-//echo "DICT_NODE_TYPE_SPLIT ON ".dechex($d).": ".dechex($c).'<br />';
+				//echo "DICT_NODE_TYPE_SPLIT ON ".dechex($d).": ".dechex($c).'<br />';
 				$dictptr++;
 				$d = ord($dict[$dictptr]);
 				if ($c < $d) {
@@ -3152,7 +3155,7 @@ class Otl
 					$dictptr = $offset;
 				}
 			} else {
-//echo "PROBLEM: ".($x).'<br />';
+				//echo "PROBLEM: ".($x).'<br />';
 				$ok = false; // Something has gone wrong
 			}
 		}
@@ -3327,7 +3330,7 @@ class Otl
 			$Coverage = $subtable_offset + $this->read_ushort();
 			$ValueFormat1 = $this->read_ushort();
 			$ValueFormat2 = $this->read_ushort();
-			$sizeOfPair = ( 2 * $this->count_bits($ValueFormat1) ) + ( 2 * $this->count_bits($ValueFormat2) );
+			$sizeOfPair = (2 * $this->count_bits($ValueFormat1)) + (2 * $this->count_bits($ValueFormat2));
 			//===========
 			// Format 1:
 			//===========
@@ -3544,7 +3547,7 @@ class Otl
 				$BasePos = strpos($BaseGlyphs, $this->OTLdata[$matchedpos]['hex']) / 6;
 
 				// Move to the BaseRecord we want
-				$nSkip = (2 * $BasePos * $ClassCount );
+				$nSkip = (2 * $BasePos * $ClassCount);
 				$this->skip($nSkip);
 
 				// Read BaseRecord we want for appropriate Class
@@ -3708,7 +3711,7 @@ class Otl
 				$Mark2Pos = strpos($Mark2Glyphs, $this->OTLdata[$matchedpos]['hex']) / 6;
 
 				// Move to the Mark2Record we want
-				$nSkip = (2 * $Mark2Pos * $ClassCount );
+				$nSkip = (2 * $Mark2Pos * $ClassCount);
 				$this->skip($nSkip);
 
 				// Read Mark2Record we want for appropriate Class
@@ -3739,7 +3742,7 @@ class Otl
 				// This happens in Indic when the Mark being attached to e.g. [Halant Ma lig] -> MatraU,  [U+0B4D + U+B2E as E0F5]-> U+0B41 become E135
 				if (!defined("OMIT_OTL_FIX_1") || OMIT_OTL_FIX_1 != 1) {
 					/* OTL_FIX_1 */
-					if (isset($this->assocMarks[$matchedpos]) && ($prevLig != $thisLig || $prevComp != $thisComp )) {
+					if (isset($this->assocMarks[$matchedpos]) && ($prevLig != $thisLig || $prevComp != $thisComp)) {
 						return 0;
 					}
 				} else {
@@ -3882,8 +3885,7 @@ class Otl
 
 								if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
 									return $shift;
-								} /* OTL_FIX_3 */
-								else {
+								} /* OTL_FIX_3 */ else {
 									return $InputGlyphCount; // should be + matched ignores in Input Sequence
 								}
 							}
@@ -4067,8 +4069,7 @@ class Otl
 
 								if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
 									return $shift;
-								} /* OTL_FIX_3 */
-								else {
+								} /* OTL_FIX_3 */ else {
 									return $InputGlyphCount; // should be + matched ignores in Input Sequence
 								}
 							}
@@ -4403,7 +4404,7 @@ class Otl
 
 	private function _getValueRecord($ValueFormat)
 	{
-	// Common ValueRecord for GPOS
+		// Common ValueRecord for GPOS
 		// Only returns 3 possible: $vra['XPlacement'] $vra['YPlacement'] $vra['XAdvance']
 		$vra = [];
 		// Horizontal adjustment for placement - in design units
@@ -4654,7 +4655,8 @@ class Otl
 				if (count($remember)) {
 					$last = count($remember) - 1;
 					if (($remember[$last]['num'] == 8235) || ($remember[$last]['num'] == 8234) || ($remember[$last]['num'] == 8238) ||
-						($remember[$last]['num'] == 8237)) {
+						($remember[$last]['num'] == 8237)
+					) {
 						$match = array_pop($remember);
 						$cel = $match['cel'];
 						$dos = $match['dos'];
@@ -5004,7 +5006,7 @@ class Otl
 		// In the resolution of levels in rules I1 and I2, the maximum embedding level of 62 can be reached.
 		$numchunks = count($para);
 		for ($nc = 0; $nc < $numchunks; $nc++) {
-			$chunkOTLdata = & $para[$nc][18];
+			$chunkOTLdata = &$para[$nc][18];
 
 			$numchars = count($chunkOTLdata['char_data']);
 			for ($i = 0; $i < $numchars; ++$i) {
@@ -5057,14 +5059,17 @@ class Otl
 					if (count($remember)) {
 						$last = count($remember) - 1;
 						if (($remember[$last]['num'] == 8235) || ($remember[$last]['num'] == 8234) || ($remember[$last]['num'] == 8238) ||
-							($remember[$last]['num'] == 8237)) {
+							($remember[$last]['num'] == 8237)
+						) {
 							$match = array_pop($remember);
 							$cel = $match['cel'];
 							$dos = $match['dos'];
 						}
 					}
-				} elseif ($chunkOTLdata['char_data'][$i]['uni'] == 8294 || $chunkOTLdata['char_data'][$i]['uni'] == 8295 ||
-					$chunkOTLdata['char_data'][$i]['uni'] == 8296) { // LRI // RLI // FSI
+				} elseif (
+					$chunkOTLdata['char_data'][$i]['uni'] == 8294 || $chunkOTLdata['char_data'][$i]['uni'] == 8295 ||
+					$chunkOTLdata['char_data'][$i]['uni'] == 8296
+				) { // LRI // RLI // FSI
 					// X5a. With each RLI:
 					// X5b. With each LRI:
 					// X5c. With each FSI, apply rules P2 and P3 for First Strong character
@@ -5148,7 +5153,8 @@ class Otl
 							break;
 						} // End/close any open embedding states not explicitly closed during the isolate
 						elseif (($remember[$last]['num'] == 8235) || ($remember[$last]['num'] == 8234) || ($remember[$last]['num'] == 8238) ||
-							($remember[$last]['num'] == 8237)) {
+							($remember[$last]['num'] == 8237)
+						) {
 							$match = array_pop($remember);
 						}
 					}
@@ -5221,7 +5227,7 @@ class Otl
 			$postlevel = $pel;
 			$firstchar = true;
 			for ($nc = 0; $nc < $numchunks; $nc++) {
-				$chardata = & $para[$nc][18]['char_data'];
+				$chardata = &$para[$nc][18]['char_data'];
 				$numchars = count($chardata);
 				for ($i = 0; $i < $numchars; ++$i) {
 					if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
@@ -5264,7 +5270,7 @@ class Otl
 		for ($ir = 0; $ir <= $dictr; $ir++) {
 			$prevtype = 0;
 			for ($nc = 0; $nc < $numchunks; $nc++) {
-				$chardata = & $para[$nc][18]['char_data'];
+				$chardata = &$para[$nc][18]['char_data'];
 				$numchars = count($chardata);
 				for ($i = 0; $i < $numchars; ++$i) {
 					if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
@@ -5286,7 +5292,7 @@ class Otl
 		for ($ir = 0; $ir <= $dictr; $ir++) {
 			$laststrongtype = -1;
 			for ($nc = 0; $nc < $numchunks; $nc++) {
-				$chardata = & $para[$nc][18]['char_data'];
+				$chardata = &$para[$nc][18]['char_data'];
 				$numchars = count($chardata);
 				for ($i = 0; $i < $numchars; ++$i) {
 					if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
@@ -5308,7 +5314,7 @@ class Otl
 
 		// W3. Change all ALs to R.
 		for ($nc = 0; $nc < $numchunks; $nc++) {
-			$chardata = & $para[$nc][18]['char_data'];
+			$chardata = &$para[$nc][18]['char_data'];
 			$numchars = count($chardata);
 			for ($i = 0; $i < $numchars; ++$i) {
 				if (isset($chardata[$i]['type']) && $chardata[$i]['type'] == Ucdn::BIDI_CLASS_AL) {
@@ -5323,7 +5329,7 @@ class Otl
 			$prevtype = -1;
 			$nexttype = -1;
 			for ($nc = 0; $nc < $numchunks; $nc++) {
-				$chardata = & $para[$nc][18]['char_data'];
+				$chardata = &$para[$nc][18]['char_data'];
 				$numchars = count($chardata);
 				for ($i = 0; $i < $numchars; ++$i) {
 					if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
@@ -5365,7 +5371,7 @@ class Otl
 			$prevtype = -1;
 			$nexttype = -1;
 			for ($nc = 0; $nc < $numchunks; $nc++) {
-				$chardata = & $para[$nc][18]['char_data'];
+				$chardata = &$para[$nc][18]['char_data'];
 				$numchars = count($chardata);
 				for ($i = 0; $i < $numchars; ++$i) {
 					if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
@@ -5411,7 +5417,7 @@ class Otl
 
 		// W6. Otherwise, separators and terminators change to Other Neutral.
 		for ($nc = 0; $nc < $numchunks; $nc++) {
-			$chardata = & $para[$nc][18]['char_data'];
+			$chardata = &$para[$nc][18]['char_data'];
 			$numchars = count($chardata);
 			for ($i = 0; $i < $numchars; ++$i) {
 				if (isset($chardata[$i]['type']) && (($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ET) || ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ES) || ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_CS))) {
@@ -5424,7 +5430,7 @@ class Otl
 		for ($ir = 0; $ir <= $dictr; $ir++) {
 			$laststrongtype = -1;
 			for ($nc = 0; $nc < $numchunks; $nc++) {
-				$chardata = & $para[$nc][18]['char_data'];
+				$chardata = &$para[$nc][18]['char_data'];
 				$numchars = count($chardata);
 				for ($i = 0; $i < $numchars; ++$i) {
 					if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
@@ -5447,7 +5453,7 @@ class Otl
 		for ($ir = 0; $ir <= $dictr; $ir++) {
 			$laststrongtype = -1;
 			for ($nc = 0; $nc < $numchunks; $nc++) {
-				$chardata = & $para[$nc][18]['char_data'];
+				$chardata = &$para[$nc][18]['char_data'];
 				$numchars = count($chardata);
 				for ($i = 0; $i < $numchars; ++$i) {
 					if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
@@ -5510,7 +5516,7 @@ class Otl
 
 		// N2. Any remaining neutrals take the embedding direction
 		for ($nc = 0; $nc < $numchunks; $nc++) {
-			$chardata = & $para[$nc][18]['char_data'];
+			$chardata = &$para[$nc][18]['char_data'];
 			$numchars = count($chardata);
 			for ($i = 0; $i < $numchars; ++$i) {
 				if (isset($chardata[$i]['type']) && ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ON || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_WS)) {
@@ -5523,7 +5529,7 @@ class Otl
 		// I1. For all characters with an even (left-to-right) embedding direction, those of type R go up one level and those of type AN or EN go up two levels.
 		// I2. For all characters with an odd (right-to-left) embedding direction, those of type L, EN or AN go up one level.
 		for ($nc = 0; $nc < $numchunks; $nc++) {
-			$chardata = & $para[$nc][18]['char_data'];
+			$chardata = &$para[$nc][18]['char_data'];
 			$numchars = count($chardata);
 			for ($i = 0; $i < $numchars; ++$i) {
 				if (isset($chardata[$i]['level'])) {
@@ -5618,13 +5624,17 @@ class Otl
 		}
 
 		for ($i = ($numchars - 1); $i > 0; $i--) {
-			if (isset($bidiData[$i]['type'])){
+			if (isset($bidiData[$i]['type'])) {
 				if ($bidiData[$i]['type'] == Ucdn::BIDI_CLASS_WS || (isset($bidiData[$i]['orig_type']) && $bidiData[$i]['orig_type'] == Ucdn::BIDI_CLASS_WS)) {
-					$bidiData[$i]['level'] = $pel;
+					if (isset($bidiData[$i]['level'])) {
+						$bidiData[$i]['level'] = $pel;
+					} else {
+						break;
+					}
 				} else {
 					break;
 				}
-			}else{
+			} else {
 				break;
 			}
 		}
